@@ -28,23 +28,17 @@ requirements:
   run_constrained:
     - requests >=2.0,<3
 
+# Tests disabled:
 # E   ModuleNotFoundError: No module named 'opentelemetry.test'
 # https://pypi.org/project/opentelemetry-test-utils, not in the main channel.
-{% set ignore_tests = " --ignore=tests/test_requests_ip_support.py" %}
 test:
-  source_files:
-    - tests
   imports:
     - opentelemetry.instrumentation.requests
   commands:
     - pip check
-    - pytest -v tests {{ ignore_tests }}
   requires:
     - pip
     - requests >=2.0,<3
-    - pytest >=7.4.4
-    - httpretty
-    - opentelemetry-sdk
 
 about:
   home: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation/opentelemetry-instrumentation-requests
