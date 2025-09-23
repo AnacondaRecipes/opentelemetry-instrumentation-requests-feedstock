@@ -11,7 +11,7 @@ source:
 
 build:
   number: 0
-  script: {{ PYTHON }} -m pip install . -vv
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip: true  # [py<39]
 
 requirements:
@@ -22,12 +22,15 @@ requirements:
   run:
     - python
     - opentelemetry-api >=1.12,<2
-    - opentelemetry-instrumentation ==0.58b0
-    - opentelemetry-semantic-conventions ==0.58b0
-    - opentelemetry-util-http ==0.58b0
+    - opentelemetry-instrumentation =={{ version }}
+    - opentelemetry-semantic-conventions =={{ version }}
+    - opentelemetry-util-http =={{ version }}
   run_constrained:
     - requests >=2.0,<3
 
+# E   ModuleNotFoundError: No module named 'opentelemetry.test'
+# https://pypi.org/project/opentelemetry-test-utils, not in the main channel.
+{% set ignore_tests = " --ignore=tests/test_requests_ip_support.py" %}
 test:
   source_files:
     - tests
@@ -35,11 +38,13 @@ test:
     - opentelemetry.instrumentation.requests
   commands:
     - pip check
-    - pytest -v tests
+    - pytest -v tests {{ ignore_tests }}
   requires:
     - pip
     - requests >=2.0,<3
-    - pytest
+    - pytest >=7.4.4
+    - httpretty
+    - opentelemetry-sdk
 
 about:
   home: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation/opentelemetry-instrumentation-requests
@@ -50,8 +55,10 @@ about:
   description: |
     This library allows tracing HTTP requests made by the requests library.
   dev_url: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation/opentelemetry-instrumentation-requests
-  doc_url: 
+  doc_url: https://opentelemetry-python-contrib.readthedocs.io/en/latest/instrumentation/requests/requests.html
 
 extra:
   recipe-maintainers:
     - mariusvniekerk
+  skip-lints:
+    - documentation_specifies_language
