@@ -1,45 +1,56 @@
 {% set name = "opentelemetry-instrumentation-requests" %}
-{% set version = "0.36b0" %}
+{% set version = "0.58b0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/opentelemetry_instrumentation_requests-{{ version }}.tar.gz
-  sha256: c40a075597325644e782e79e12065dfd8e363beac5259b89acda54c1d79a250c
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_')}}-{{ version }}.tar.gz
+  sha256: ae9495e6ff64e27bdb839fce91dbb4be56e325139828e8005f875baf41951a2e
 
 build:
-  noarch: python
-  script: {{ PYTHON }} -m pip install . -vv
   number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  skip: true  # [py<39]
 
 requirements:
   host:
-    - python >=3.7
     - pip
+    - python
     - hatchling
   run:
-    - python >=3.7
-    - opentelemetry-api >=1.12,<2.dev0
-    - opentelemetry-instrumentation ==0.36b0
-    - opentelemetry-semantic-conventions ==0.36b0
-    - opentelemetry-util-http ==0.36b0
+    - python
+    - opentelemetry-api >=1.12,<2
+    - opentelemetry-instrumentation ==0.58b0
+    - opentelemetry-semantic-conventions ==0.58b0
+    - opentelemetry-util-http ==0.58b0
+  run_constrained:
+    - requests >=2.0,<3
 
 test:
+  source_files:
+    - tests
   imports:
-    - opentelemetry
-    - opentelemetry.instrumentation
+    - opentelemetry.instrumentation.requests
   commands:
     - pip check
+    - pytest -v tests
   requires:
     - pip
+    - requests >=2.0,<3
+    - pytest
 
 about:
   home: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation/opentelemetry-instrumentation-requests
   summary: OpenTelemetry requests instrumentation
   license: Apache-2.0
+  license_family: Apache
   license_file: LICENSE
+  description: |
+    This library allows tracing HTTP requests made by the requests library.
+  dev_url: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation/opentelemetry-instrumentation-requests
+  doc_url: 
 
 extra:
   recipe-maintainers:
