@@ -1,18 +1,18 @@
 {% set name = "opentelemetry-instrumentation-requests" %}
-{% set version = "0.59b0" %}
+{% set version = "0.64b0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_')}}-{{ version }}.tar.gz
-  sha256: 9af2ffe3317f03074d7f865919139e89170b6763a0251b68c25e8e64e04b3400
+  sha256: 8213a20b6578c41aa05cc5b48419aea75e1584924a4904dfcf36524597e7cc96
 
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  skip: true  # [py<39]
+  skip: true  # [py<310]
 
 requirements:
   host:
